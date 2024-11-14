@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Kelola Paket</title>
+    <link rel="stylesheet" href="kelola_paket.css" />
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <div class="sidebar">
+      <div class="logo"></div>
+      <ul class="menu">
+        <li>
+          <a href="login.html">
+            <i class="fas fa-user-tie"></i>
+            <span>Login</span>
+          </a>
+        </li>
+        <li>
+          <a href="complaint.html">
+            <i class="fas fa-tachometer-alt"></i>
+            <span>Complaint</span>
+          </a>
+        </li>
+        <li>
+          <a href="keperluan.html">
+            <i class="fas fa-briefcase"></i>
+            <span>Keperluan</span>
+          </a>
+        </li>
+        <li>
+          <a href="grafik.html">
+            <i class="fas fa-chart-line"></i>
+            <span>Grafik</span>
+          </a>
+        </li>
+        
+        <li>
+          <a href="kelola_paket.html" onclick="showPage('kelola_paket')">
+            <i class="fas fa-box"></i>
+            <span>Mengelola Paket</span>
+          </a>
+        </li>
+        <li>
+          <a href="kelola_user.html" onclick="showPage('kelola_user')">
+            <i class="fas fa-users"></i>
+            <span>Mengelola User</span>
+          </a>
+        </li>
+        <li class="logout">
+          <a href="login.html">
+            <i class="fas fa-sign-out-alt"></i>
+            <span>Logout</span>
+          </a>
+        </li>
+      </ul>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main--content">
+      <div class="header--wrapper">
+        <div class="header--title">
+          <h2>Kelola Paket</h2>
+        </div>
+        <div class="user--info">
+          <span>Admin</span>
+          <i class="fas fa-user-circle"></i>
+        </div>
+      </div>
+
+      <!-- Konten Kelola Paket -->
+      <div class="tabular--wrapper">
+        <h3 class="main--title">Daftar Paket</h3>
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>Id Transaksi</th>
+                <th>Nama Lengkap</th>
+                <th>No HP</th>
+                <th>Email</th>
+                <th>Metode Bayar</th>
+                <th>Jumlah Bayar</th>
+                <th>Tanggal Bayar</th>
+                <th>Type Ruangan</th>
+                <th>Durasi</th>
+                <th>Tanggal Sewa</th>
+                <th>Akhir Sewa</th>
+                <th>Aksi</th>
+              </tr>
+            </thead>
+            <tbody>
+              <!-- Data akan dimasukkan di sini oleh JavaScript -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        const tableBody = document.querySelector("table tbody");
+
+        // Fungsi untuk mendapatkan data booking dari API
+        const fetchBookings = async () => {
+          try {
+            const response = await fetch("http://localhost:5000/booking");
+            const data = await response.json();
+
+            if (data.status === 200) {
+              populateTable(data.bookings);
+            } else {
+              console.error("Error fetching bookings:", data.message);
+            }
+          } catch (error) {
+            console.error("Error fetching bookings:", error);
+          }
+        };
+
+        // Fungsi untuk mengisi tabel dengan data booking
+        const populateTable = (bookings) => {
+          // Kosongkan tabel sebelum diisi
+          tableBody.innerHTML = "";
+
+          bookings.forEach((booking) => {
+            // Mapping ID_Ruangan ke tipe
+            const roomTypes = {
+              1: "Type 1",
+              2: "Type 2",
+              3: "Type 3",
+              4: "Type 4",
+            };
+
+            // Buat baris tabel
+            const row = document.createElement("tr");
+            row.innerHTML = `
+              <td>${booking.Id_Transaksi}</td>
+              <td>${booking.Nama_Lengkap}</td>
+              <td>${booking.No_HP}</td>
+              <td>${booking.Email}</td>
+              <td>${booking.Metode_Bayar}</td>
+              <td>${booking.Jumlah_Bayar}</td>
+              <td>${booking.Tanggal_Bayar}</td>
+              <td>${roomTypes[booking.ID_Ruangan] || "Unknown"}</td>
+              <td>${booking.Durasi}</td>
+              <td>${booking.Tanggal_Sewa}</td>
+              <td>${booking.Akhir_Sewa}</td>
+              <td>
+                <button class="edit-button">Acc</button>
+                <button class="delete-button">Tolak</button>
+              </td>
+            `;
+
+            tableBody.appendChild(row);
+          });
+        };
+
+        // Ambil data saat halaman dimuat
+        fetchBookings();
+      });
+    </script>
+    <script src="script.js"></script>
+  </body>
+</html>
